@@ -77,7 +77,11 @@ class DiskInfo(object):
     def getRDMFile(self):
         def convert(str):
             return str.replace(" ", "")
-        basename = "%s-%s-%dGB" % (convert(self.vendor), convert(self.model), long(self.size) / GIBIBYTES)
+        def convert2(str):
+            return str.replace(" ", "-",1).replace(" ","")
+        def serialnumber():
+            return self.devfspath.split("_")[-1]
+        basename = "%s-%s-%dGB" % (convert2(self.model), serialnumber(), long(self.size) / GIBIBYTES)
         if os.path.exists(basename + FILE_EXT):
             i = 0
             while os.path.exists(basename + "-" + i + FILE_EXT): i=i+1
@@ -142,12 +146,16 @@ def main():
         content = Popen(["esxcfg-info", "-s", "-F", "xml"], stdout=PIPE).communicate()[0]
         filename = StringIO.StringIO(content)
     (chdir,disks) = getDiskInfo(filename)
+    if not options.nochdir and chdir == None:
+        parser.error("Cannot find a VMFS file system for RDM files")
+    if not options.nochdir and not options.quiet:
+        print "RDM folder: " + chdir + "/" + RDM_DIR
 
     ''' Show possible disks (ataDisks)'''
-    allAtaDisks = [d for d in disks if d.getpreferredpathuid().startswith("ide")]
+    allAtaDisks = [d for d in disks if d.getpreferredpathuid().startswith("ide") or d.getpreferredpathuid().startswith("sata")]
     ataDisks = [d for d in allAtaDisks if d.getpartitiontypes().count("251") == 0]
     if not options.quiet:
-        print "Found %d relevant ATA disks, not relevant:\n      %d SCSI disks,\n      %d ATA disks with VMFS partition" % (
+        print "Found %d relevant ATA disks, not relevant:\n      %d other disks,\n      %d ATA disks with VMFS partition" % (
             len(ataDisks), len(disks)-len(allAtaDisks), len(allAtaDisks)-len(ataDisks))
         for i in range(0,len(ataDisks)):
             disk = ataDisks[i]
