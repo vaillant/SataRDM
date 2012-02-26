@@ -1,2 +1,22 @@
-This is my readme.
+SataRDM project provides a (python) script vmksatardm.py which create raw disk mapping files for VMWare ESXi hypervisor.
+
+How to use the script?
+
+1) Login into ESXi hypervisor
+
+2) Transfer the script
+	python -c 'import urllib; urllib.urlretrieve("https://raw.github.com/vaillant/SataRDM/master/SataRdm/src/vmksatardm.py", "vmksatardm.py")'
+	
+3) Execute the script
+
+
+
+
+import urllib
+
+mysock = urllib.urlopen("https://raw.github.com/vaillant/SataRDM/master/SataRdm/src/vmksatardm.py")
+fileToSave = mysock.read()
+oFile = open(r"vmksatardm.py",'wb')
+oFile.write(fileToSave)
+oFile.close
 

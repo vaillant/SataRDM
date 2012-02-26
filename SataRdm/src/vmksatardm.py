@@ -2,7 +2,9 @@
 '''
 Created on Jul 30, 2011
 
-@author: vaillant
+@author: Stefan Vaillant
+Copyright  Stefan Vaillant, 2011-2012
+
 '''
 
 from xml.etree.ElementTree import parse
@@ -84,8 +86,8 @@ class DiskInfo(object):
         basename = "%s-%s-%dGB" % (convert2(self.model), serialnumber(), long(self.size) / GIBIBYTES)
         if os.path.exists(basename + FILE_EXT):
             i = 0
-            while os.path.exists(basename + "-" + i + FILE_EXT): i=i+1
-            basename = basename + "-" + i
+            while os.path.exists(basename + "-" + str(i) + FILE_EXT): i=i+1
+            basename = basename + "-" + str(i)
         return basename + FILE_EXT
     def getCmd(self, options):
         #return command to create RDM as string[]
@@ -111,7 +113,7 @@ def getDiskInfo(filename):
     return (chdir,disks)
 
 def main():
-    usage = "usage: %prog [options]\n   Create raw device mapping for (S)ATA disks."
+    usage = "usage: %prog [options]\n   Create raw device mapping for (S)ATA disks. \nExample:\n   cd /vmfs/volumes/datastore1/\n   vmksatardm.py"
     parser = OptionParser(usage)
     parser.add_option("-f", "--file", dest="filename",
                       help="read storage config from FILENAME instead of using 'esxcfg-info -s -F xml', used mainly for testing")
