@@ -10,8 +10,6 @@ How to use the script?
 3) Execute the script
 
 
-
-
 import urllib
 
 mysock = urllib.urlopen("https://raw.github.com/vaillant/SataRDM/master/SataRdm/src/vmksatardm.py")
@@ -20,3 +18,4 @@ oFile = open(r"vmksatardm.py",'wb')
 oFile.write(fileToSave)
 oFile.close
 
+# note
